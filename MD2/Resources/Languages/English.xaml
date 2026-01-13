@@ -1,0 +1,39 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <sys:String x:Key="Str_AppTitle">Marking Designer v2.0</sys:String>
+    <sys:String x:Key="Str_Theme">THEME</sys:String>
+    <sys:String x:Key="Str_Lang">LANG</sys:String>
+
+    <sys:String x:Key="Str_TabEditor">EDITOR</sys:String>
+    <sys:String x:Key="Str_TabJobList">JOB LIST</sys:String>
+    <sys:String x:Key="Str_TabSeqList">SEQUENCE LIST</sys:String>
+    <sys:String x:Key="Str_TabDevice">DEVICE</sys:String>
+
+    <sys:String x:Key="Str_Prev">◀ PREV</sys:String>
+    <sys:String x:Key="Str_Next">NEXT ▶</sys:String>
+    <sys:String x:Key="Str_LabelAddFromList">Add Job from List:</sys:String>
+    <sys:String x:Key="Str_BtnAdd">✚ ADD</sys:String>
+    <sys:String x:Key="Str_BtnRemove">🗑 REMOVE from Sequence</sys:String>
+
+    <sys:String x:Key="Str_PropTitle">PROPERTIES</sys:String>
+    <sys:String x:Key="Str_PropName">Name</sys:String>
+    <sys:String x:Key="Str_PropText">Text Content</sys:String>
+    <sys:String x:Key="Str_PropX">X (mm)</sys:String>
+    <sys:String x:Key="Str_PropY">Y (mm)</sys:String>
+    <sys:String x:Key="Str_PropPitchX">Pitch X (mm)</sys:String>
+    <sys:String x:Key="Str_PropPitchY">Pitch Y (mm)</sys:String>
+    <sys:String x:Key="Str_PropHeight">Height (mm)</sys:String>
+    <sys:String x:Key="Str_PropInc">Increment Number</sys:String>
+
+    <sys:String x:Key="Str_HeaderID">ID</sys:String>
+    <sys:String x:Key="Str_HeaderName">Job Name</sys:String>
+    <sys:String x:Key="Str_HeaderText">Text Content</sys:String>
+    <sys:String x:Key="Str_HeaderX">X (mm)</sys:String>
+    <sys:String x:Key="Str_HeaderY">Y (mm)</sys:String>
+    <sys:String x:Key="Str_HeaderH">Height</sys:String>
+    <sys:String x:Key="Str_HeaderTitle">Sequence Title</sys:String>
+    <sys:String x:Key="Str_HeaderCount">Job Count</sys:String>
+
+</ResourceDictionary>

@@ -1,0 +1,143 @@
+﻿<Window x:Class="MarkingDesigner.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:v="clr-namespace:MarkingDesigner.Views"
+        xmlns:vm="clr-namespace:MarkingDesigner.ViewModels"
+        Title="{DynamicResource Str_AppTitle}" Height="768" Width="1200"
+        Background="{DynamicResource WindowBackBrush}">
+
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <Style x:Key="CellTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="2,0"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" Background="{DynamicResource AccentBrush}">
+            <Menu DockPanel.Dock="Top" Background="Transparent">
+                <Menu.Resources>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                        <Setter Property="Background" Value="{DynamicResource PanelBackBrush}"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Padding" Value="10,5"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Style.Triggers>
+                            <Trigger Property="Role" Value="TopLevelHeader">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Trigger>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource SelectionBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Menu.Resources>
+
+                <MenuItem Header="{DynamicResource Str_Theme}">
+                    <MenuItem Header="Dark Mode" Command="{Binding ChangeThemeCommand}" CommandParameter="Dark"/>
+                    <MenuItem Header="Light Mode" Command="{Binding ChangeThemeCommand}" CommandParameter="Light"/>
+                </MenuItem>
+
+                <MenuItem Header="{DynamicResource Str_Lang}">
+                    <MenuItem Header="English" Command="{Binding ChangeLanguageCommand}" CommandParameter="English"/>
+                    <MenuItem Header="日本語" Command="{Binding ChangeLanguageCommand}" CommandParameter="Japanese"/>
+                </MenuItem>
+            </Menu>
+            <TextBlock Text="{DynamicResource Str_AppTitle}" Foreground="White" FontSize="20" FontWeight="Bold" Margin="15,5"/>
+        </DockPanel>
+
+        <TabControl Grid.Row="1" Background="{DynamicResource WindowBackBrush}" BorderThickness="0">
+
+            <TabItem Header="{DynamicResource Str_TabEditor}">
+                <v:EditorView/>
+            </TabItem>
+
+            <TabItem Header="{DynamicResource Str_TabJobList}">
+                <Grid Background="{DynamicResource PanelBackBrush}">
+                    <DataGrid ItemsSource="{Binding AllJobs}" SelectedItem="{Binding SelectedJob}"
+                              AutoGenerateColumns="False" CanUserAddRows="False"
+                              Background="Transparent" BorderThickness="0" 
+                              Foreground="{DynamicResource TextBrush}" HeadersVisibility="Column"
+                              RowBackground="{DynamicResource PanelBackBrush}"
+                              AlternatingRowBackground="{DynamicResource WindowBackBrush}"
+                              GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{DynamicResource BorderBrush}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderID}" Binding="{Binding JobId}" Width="50" IsReadOnly="True" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderName}" Binding="{Binding Name}" Width="150" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderText}" Binding="{Binding Marking.Text}" Width="*" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderX}" Binding="{Binding StartX}" Width="60" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderY}" Binding="{Binding StartY}" Width="60" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderH}" Binding="{Binding Height}" Width="60" ElementStyle="{StaticResource CellTextStyle}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="{DynamicResource Str_TabSeqList}">
+                <Grid Background="{DynamicResource PanelBackBrush}">
+                    <DataGrid ItemsSource="{Binding Sequences}" SelectedItem="{Binding CurrentSequence}"
+                              AutoGenerateColumns="False" CanUserAddRows="False"
+                              Background="Transparent" BorderThickness="0" 
+                              Foreground="{DynamicResource TextBrush}" HeadersVisibility="Column"
+                              RowBackground="{DynamicResource PanelBackBrush}"
+                              AlternatingRowBackground="{DynamicResource WindowBackBrush}"
+                              GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{DynamicResource BorderBrush}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderID}" Binding="{Binding SequenceId}" Width="60" IsReadOnly="True" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderTitle}" Binding="{Binding Title}" Width="*" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderCount}" Binding="{Binding Jobs.Count}" Width="80" IsReadOnly="True" ElementStyle="{StaticResource CellTextStyle}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="{DynamicResource Str_TabDevice}">
+                <Grid Background="{DynamicResource PanelBackBrush}">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
+                        <TextBlock Text="Device Settings" Foreground="{DynamicResource TextBrush}" FontSize="24" FontWeight="Bold" Margin="0,0,0,30" HorizontalAlignment="Center"/>
+
+                        <Grid Margin="0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Select Model:" Foreground="{DynamicResource TextBrush}" FontSize="16" VerticalAlignment="Center"/>
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding Device.DeviceOptions}" 
+                                      SelectedValue="{Binding Device.CurrentDevice}"
+                                      SelectedValuePath="Value" DisplayMemberPath="Label"
+                                      Height="30" FontSize="14" VerticalContentAlignment="Center"/>
+                        </Grid>
+
+                        <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource WindowBackBrush}" Padding="20" Margin="0,20,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Current Specifications" Foreground="{DynamicResource SelectionBrush}" FontWeight="Bold" Margin="0,0,0,10"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,5">
+                                    <TextBlock Text="Marking Area X:" Foreground="{DynamicResource TextBrush}" Width="120"/>
+                                    <TextBlock Text="{Binding Device.RangeX, StringFormat='{}{0} mm'}" Foreground="{DynamicResource TextBrush}" FontWeight="Bold"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,5">
+                                    <TextBlock Text="Marking Area Y:" Foreground="{DynamicResource TextBrush}" Width="120"/>
+                                    <TextBlock Text="{Binding Device.RangeY, StringFormat='{}{0} mm'}" Foreground="{DynamicResource TextBrush}" FontWeight="Bold"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
