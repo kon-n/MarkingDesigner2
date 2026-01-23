@@ -1,8 +1,13 @@
-﻿namespace MarkingDesigner.Models
+﻿using MarkingDesigner.ViewModels;
+
+namespace MarkingDesigner.Models
 {
-    public class MarkingData
+    public class MarkingData : BindableBase
     {
-        public string Text { get; set; } = "";
-        public bool IsIncrement { get; set; }
+        private string _text = "";
+        public string Text { get => _text; set => SetProperty(ref _text, value); }
+
+        private bool _isIncrement;
+        public bool IsIncrement { get => _isIncrement; set => SetProperty(ref _isIncrement, value); }
     }
 }

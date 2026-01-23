@@ -10,6 +10,8 @@
         <cv:MmToDipConverter x:Key="mm2dip"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
+        <DropShadowEffect x:Key="DropShadowEffect" BlurRadius="15" ShadowDepth="5" Opacity="0.4" Color="Black"/>
+
         <Style x:Key="CellTextStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -136,91 +138,114 @@
 
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="{DynamicResource BorderBrush}"/>
 
-            <ScrollViewer Grid.Column="2" Background="#202020" 
+            <ScrollViewer Grid.Column="2" Background="#1A1A1A" 
                           HorizontalScrollBarVisibility="Auto" 
-                          VerticalScrollBarVisibility="Auto">
+                          VerticalScrollBarVisibility="Auto"
+                          x:Name="MainScrollViewer">
 
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Grid.LayoutTransform>
-                        <ScaleTransform ScaleX="{Binding ZoomScale}" ScaleY="{Binding ZoomScale}"/>
-                    </Grid.LayoutTransform>
+                <!-- 常に中央に配置するための外側コンテナ -->
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <!-- 拡大縮小の対象となるコンテナ。Center指定で中央に寄せる -->
+                    <Border HorizontalAlignment="Center" VerticalAlignment="Center" Margin="100">
+                        <Grid Background="{DynamicResource CanvasBackBrush}" 
+                              Effect="{StaticResource DropShadowEffect}">
+                            <Grid.LayoutTransform>
+                                <ScaleTransform ScaleX="{Binding ZoomScale}" ScaleY="{Binding ZoomScale}"/>
+                            </Grid.LayoutTransform>
 
-                    <ItemsControl ItemsSource="{Binding CurrentSequence.Jobs}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas Width="{Binding Device.RangeX, Converter={StaticResource mm2dip}}" 
-                                        Height="{Binding Device.RangeY, Converter={StaticResource mm2dip}}" 
-                                        Background="{DynamicResource CanvasBackBrush}" Margin="20"
-                                        RenderTransformOrigin="0,1">
-                                    <Canvas.RenderTransform>
-                                        <ScaleTransform ScaleY="-1"/>
-                                    </Canvas.RenderTransform>
-                                </Canvas>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
+                            <ItemsControl ItemsSource="{Binding CurrentSequence.Jobs}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas Width="{Binding Device.RangeX, Converter={StaticResource mm2dip}}" 
+                                                Height="{Binding Device.RangeY, Converter={StaticResource mm2dip}}" 
+                                                Background="Transparent"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
 
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding StartX, Converter={StaticResource mm2dip}}"/>
-                                <Setter Property="Canvas.Top"  Value="{Binding StartY, Converter={StaticResource mm2dip}}"/>
-                                <Setter Property="Panel.ZIndex" Value="{Binding JobId}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                        <Setter Property="Panel.ZIndex" Value="9999"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style TargetType="ContentPresenter">
+                                        <Setter Property="Canvas.Left" Value="{Binding StartX, Converter={StaticResource mm2dip}}"/>
+                                        <Setter Property="Canvas.Bottom"  Value="{Binding StartY, Converter={StaticResource mm2dip}}"/>
+                                        <Setter Property="Panel.ZIndex" Value="{Binding JobId}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="Panel.ZIndex" Value="9999"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
 
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid RenderTransformOrigin="0,0">
-                                    <Grid.RenderTransform>
-                                        <ScaleTransform ScaleY="-1"/>
-                                    </Grid.RenderTransform>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Background="Transparent">
+                                            <!-- Visual Layer: LayoutTransform enables proper layout sizing after flip -->
+                                            <Border x:Name="Bd" 
+                                                    BorderThickness="1" 
+                                                    BorderBrush="Transparent" 
+                                                    Background="Transparent" 
+                                                    Padding="2"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Bottom">
+                                                <Border.LayoutTransform>
+                                                    <ScaleTransform ScaleY="-1"/>
+                                                </Border.LayoutTransform>
+                                                <ctrl:MarkingObject x:Name="MarkingCtrl" Text="{Binding Marking.Text}" FontType="{Binding Font}"
+                                                                    CharHeight="{Binding Height, Converter={StaticResource mm2dip}}"
+                                                                    PitchX="{Binding PitchX, Converter={StaticResource mm2dip}}"
+                                                                    PitchY="{Binding PitchY, Converter={StaticResource mm2dip}}"
+                                                                    RotationType="{Binding RotationType}"
+                                                                    Stroke="Black" StrokeThickness="1"/>
+                                            </Border>
 
-                                    <Border x:Name="Bd" BorderThickness="1" BorderBrush="Transparent" Background="Transparent" Padding="2">
-                                        <ctrl:MarkingObject Text="{Binding Marking.Text}" FontType="{Binding Font}"
-                                                            CharHeight="{Binding Height, Converter={StaticResource mm2dip}}"
-                                                            PitchX="{Binding PitchX, Converter={StaticResource mm2dip}}"
-                                                            PitchY="{Binding PitchY, Converter={StaticResource mm2dip}}"
-                                                            RotationType="{Binding RotationType}"
-                                                            Stroke="Black" StrokeThickness="1"/>
-                                    </Border>
+                                            <!-- Move Handle Layer: Outside the flip to simplify mouse interaction -->
+                                            <Thumb Opacity="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <i:Interaction.Behaviors>
+                                                    <bh:ElementMoveBehavior 
+                                                        PositionX="{Binding StartX, Mode=TwoWay}" 
+                                                        PositionY="{Binding StartY, Mode=TwoWay}"
+                                                        ZoomScale="{Binding DataContext.ZoomScale, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                                </i:Interaction.Behaviors>
+                                                <Thumb.Template>
+                                                    <ControlTemplate>
+                                                        <Rectangle Fill="Transparent"/>
+                                                    </ControlTemplate>
+                                                </Thumb.Template>
+                                            </Thumb>
 
-                                    <Thumb Opacity="0">
-                                        <i:Interaction.Behaviors>
-                                            <bh:ElementMoveBehavior PositionX="{Binding StartX, Mode=TwoWay}" PositionY="{Binding StartY, Mode=TwoWay}"/>
-                                        </i:Interaction.Behaviors>
-                                        <Thumb.Template>
-                                            <ControlTemplate>
-                                                <Rectangle Fill="Transparent"/>
-                                            </ControlTemplate>
-                                        </Thumb.Template>
-                                    </Thumb>
+                                            <!-- Resize Handle: Positioned at visual top (which is positive Y in DataTemplate Grid) -->
+                                            <Thumb VerticalAlignment="Top" HorizontalAlignment="Center" Width="12" Height="12" Cursor="SizeNS" Margin="0,-6,0,0">
+                                                <i:Interaction.Behaviors>
+                                                    <bh:ElementResizeHeightBehavior Height="{Binding Height, Mode=TwoWay}"/>
+                                                </i:Interaction.Behaviors>
+                                                <Thumb.Template>
+                                                    <ControlTemplate>
+                                                        <Border Background="White" BorderBrush="Black" BorderThickness="1"/>
+                                                    </ControlTemplate>
+                                                </Thumb.Template>
+                                            </Thumb>
+                                        </Grid>
 
-                                    <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="12" Height="12" Cursor="SizeNS" Margin="0,0,0,-6">
-                                        <i:Interaction.Behaviors>
-                                            <bh:ElementResizeHeightBehavior Height="{Binding Height, Mode=TwoWay}"/>
-                                        </i:Interaction.Behaviors>
-                                        <Thumb.Template>
-                                            <ControlTemplate>
-                                                <Border Background="White" BorderBrush="Black" BorderThickness="1"/>
-                                            </ControlTemplate>
-                                        </Thumb.Template>
-                                    </Thumb>
-                                </Grid>
-
-                                <DataTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                        <Setter TargetName="Bd" Property="BorderBrush" Value="Red"/>
-                                        <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
-                                        <Setter TargetName="Bd" Property="Background" Value="#22FF0000"/>
-                                    </DataTrigger>
-                                </DataTemplate.Triggers>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                                        <DataTemplate.Triggers>
+                                            <!-- Selection: Green -->
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                <Setter TargetName="Bd" Property="BorderBrush" Value="#FF00FF00"/>
+                                                <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
+                                                <Setter TargetName="Bd" Property="Background" Value="#2200FF00"/>
+                                                <Setter TargetName="MarkingCtrl" Property="Stroke" Value="#FF00FF00"/>
+                                            </DataTrigger>
+                                            <!-- Out of Bounds: Red (Overrides selection) -->
+                                            <DataTrigger Binding="{Binding IsOutOfBounds}" Value="True">
+                                                <Setter TargetName="Bd" Property="BorderBrush" Value="#FFFF0000"/>
+                                                <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
+                                                <Setter TargetName="Bd" Property="Background" Value="#22FF0000"/>
+                                                <Setter TargetName="MarkingCtrl" Property="Stroke" Value="#FFFF0000"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </Border>
                 </Grid>
             </ScrollViewer>
 

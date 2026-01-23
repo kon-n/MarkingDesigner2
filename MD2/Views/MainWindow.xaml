@@ -79,9 +79,12 @@
                             <DataGridTextColumn Header="{DynamicResource Str_HeaderID}" Binding="{Binding JobId}" Width="50" IsReadOnly="True" ElementStyle="{StaticResource CellTextStyle}"/>
                             <DataGridTextColumn Header="{DynamicResource Str_HeaderName}" Binding="{Binding Name}" Width="150" ElementStyle="{StaticResource CellTextStyle}"/>
                             <DataGridTextColumn Header="{DynamicResource Str_HeaderText}" Binding="{Binding Marking.Text}" Width="*" ElementStyle="{StaticResource CellTextStyle}"/>
-                            <DataGridTextColumn Header="{DynamicResource Str_HeaderX}" Binding="{Binding StartX}" Width="60" ElementStyle="{StaticResource CellTextStyle}"/>
-                            <DataGridTextColumn Header="{DynamicResource Str_HeaderY}" Binding="{Binding StartY}" Width="60" ElementStyle="{StaticResource CellTextStyle}"/>
-                            <DataGridTextColumn Header="{DynamicResource Str_HeaderH}" Binding="{Binding Height}" Width="60" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderX}" Binding="{Binding StartX, StringFormat=N1}" Width="80" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderY}" Binding="{Binding StartY, StringFormat=N1}" Width="80" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderH}" Binding="{Binding Height, StringFormat=N1}" Width="80" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderPX}" Binding="{Binding PitchX, StringFormat=N1}" Width="80" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderPY}" Binding="{Binding PitchY, StringFormat=N1}" Width="80" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderRot}" Binding="{Binding RotationType}" Width="60" ElementStyle="{StaticResource CellTextStyle}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

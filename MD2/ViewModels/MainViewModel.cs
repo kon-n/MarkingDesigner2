@@ -139,7 +139,10 @@ namespace MarkingDesigner.ViewModels
                 if (oldTheme != null) Application.Current.Resources.MergedDictionaries.Remove(oldTheme);
                 Application.Current.Resources.MergedDictionaries.Add(dict);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"テーマ読み込みに失敗しました: {ex.Message}", "ThemeChange Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void LanguageChange(string lang)

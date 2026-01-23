@@ -35,5 +35,8 @@
     <sys:String x:Key="Str_HeaderH">Height</sys:String>
     <sys:String x:Key="Str_HeaderTitle">Sequence Title</sys:String>
     <sys:String x:Key="Str_HeaderCount">Job Count</sys:String>
+    <sys:String x:Key="Str_HeaderPX">Pitch X (mm)</sys:String>
+    <sys:String x:Key="Str_HeaderPY">Pitch Y (mm)</sys:String>
+    <sys:String x:Key="Str_HeaderRot">Rot</sys:String>
 
 </ResourceDictionary>

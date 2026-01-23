@@ -13,7 +13,7 @@ namespace MarkingDesigner.Views.Controls
         #region Properties
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(MarkingObject),
-            new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.AffectsRender));
+            new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure));
         public string Text { get { return (string)GetValue(TextProperty); } set { SetValue(TextProperty, value); } }
 
         public static readonly DependencyProperty DisplayScaleProperty =
@@ -23,12 +23,12 @@ namespace MarkingDesigner.Views.Controls
 
         public static readonly DependencyProperty CharHeightProperty =
             DependencyProperty.Register("CharHeight", typeof(double), typeof(MarkingObject),
-            new FrameworkPropertyMetadata(5.0, FrameworkPropertyMetadataOptions.AffectsRender));
+            new FrameworkPropertyMetadata(5.0, FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure));
         public double CharHeight { get { return (double)GetValue(CharHeightProperty); } set { SetValue(CharHeightProperty, value); } }
 
         public static readonly DependencyProperty PitchXProperty =
             DependencyProperty.Register("PitchX", typeof(double), typeof(MarkingObject),
-            new FrameworkPropertyMetadata(5.0, FrameworkPropertyMetadataOptions.AffectsRender));
+            new FrameworkPropertyMetadata(5.0, FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure));
         public double PitchX { get { return (double)GetValue(PitchXProperty); } set { SetValue(PitchXProperty, value); } }
 
         public static readonly DependencyProperty PitchYProperty =
@@ -43,7 +43,7 @@ namespace MarkingDesigner.Views.Controls
 
         public static readonly DependencyProperty RotationTypeProperty =
             DependencyProperty.Register("RotationType", typeof(int), typeof(MarkingObject),
-            new FrameworkPropertyMetadata(1, FrameworkPropertyMetadataOptions.AffectsRender));
+            new FrameworkPropertyMetadata(1, FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure));
         public int RotationType { get { return (int)GetValue(RotationTypeProperty); } set { SetValue(RotationTypeProperty, value); } }
         #endregion
 
@@ -75,8 +75,9 @@ namespace MarkingDesigner.Views.Controls
                 var ggs = new GeometryGroup();
                 var currentFontDict = MarkingFont.Fonts[FontType];
 
-                double renderScale = CharHeight / 1000.0;
-                double angle = GetAngleFromType(RotationType); // 先に角度を取得
+                // フォントの基準高さを取得 ( 'A' または 'S' または最初の文字から推測)
+                double nativeHeight = GetNativeHeight(currentFontDict);
+                double renderScale = CharHeight / nativeHeight;
 
                 double currentX = 0;
                 double currentY = 0;
@@ -90,29 +91,37 @@ namespace MarkingDesigner.Views.Controls
                         if (ncData != null && !string.IsNullOrEmpty(ncData.GCode))
                         {
                             GeometryGroup charGroup = ParseGCodeToGeometry(ncData.GCode);
-
                             TransformGroup charTg = new TransformGroup();
-
-                            // 1. スケール (サイズ合わせ)
+                            
+                            // 1. スケール
                             charTg.Children.Add(new ScaleTransform(renderScale, renderScale));
-
-                            // 2. 回転 (文字自身の原点を中心に回転)
-                            // ★修正点: 配置(Translate)の前に回転を行うことで、ピッチ方向に影響を与えない
+                            
+                            // 2. 回転 (個別の文字を回転)
+                            double angle = GetAngleFromType(RotationType);
                             if (angle != 0.0)
                             {
                                 charTg.Children.Add(new RotateTransform(angle));
                             }
 
-                            // 3. 配置 (ピッチ計算済みの位置へ移動)
+                            // 3. 配置 (ピッチに基づく位置へ)
                             charTg.Children.Add(new TranslateTransform(currentX, currentY));
-
+                            
                             charGroup.Transform = charTg;
                             ggs.Children.Add(charGroup);
                         }
                     }
-                    // ピッチの加算は回転の影響を受けず、そのまま行う
                     currentX += PitchX;
                     currentY += PitchY;
+                }
+
+                // 【追加】描画内容を(0,0)基準に揃えることで Border サイズと同期させる
+                Rect bounds = ggs.Bounds;
+                if (!bounds.IsEmpty)
+                {
+                    var finalTg = new TransformGroup();
+                    // 左上を(0,0)に持ってくる平行移動
+                    finalTg.Children.Add(new TranslateTransform(-bounds.Left, -bounds.Top));
+                    ggs.Transform = finalTg;
                 }
 
                 if (ggs.CanFreeze) ggs.Freeze();
@@ -120,78 +129,171 @@ namespace MarkingDesigner.Views.Controls
             }
         }
 
+        private double GetNativeHeight(Dictionary<byte, NCData> fontDict)
+        {
+            // 'A'(65), 'S'(83), 'H'(72) あたりから高さを探る
+            byte[] probes = { 65, 83, 72, 69 };
+            foreach (var code in probes)
+            {
+                if (fontDict.TryGetValue(code, out var nc))
+                {
+                    var geo = ParseGCodeToGeometry(nc.GCode);
+                    if (geo.Bounds.Height > 0) return geo.Bounds.Height;
+                }
+            }
+            // 見つからなければ辞書の最初の文字から
+            foreach (var nc in fontDict.Values)
+            {
+                var geo = ParseGCodeToGeometry(nc.GCode);
+                if (geo.Bounds.Height > 0) return geo.Bounds.Height;
+            }
+            return 1000.0; // デフォルト
+        }
+
+        protected override Size MeasureOverride(Size constraint)
+        {
+            var geo = DefiningGeometry;
+            if (geo == null || geo == Geometry.Empty) return new Size(0, 0);
+
+            Rect b = geo.Bounds;
+            // 原点(0,0)からの広がりをサイズとして返す
+            double w = Math.Max(b.Right, 0) - Math.Min(b.Left, 0);
+            double h = Math.Max(b.Bottom, 0) - Math.Min(b.Top, 0);
+
+            // 負方向に描画されている場合、その分をマージン等で吸収するか、
+            // ここで描画原点をずらして(0,0)から始まるようにする設計が必要だが、
+            // まずは正確な Bounds を返す。
+            return new Size(Math.Max(w, 1.0), Math.Max(h, 1.0));
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            return base.ArrangeOverride(finalSize);
+        }
+
         private GeometryGroup ParseGCodeToGeometry(string gcodeStr)
         {
             var gg = new GeometryGroup();
-            Point start = new Point(0, 0);
+            Point currentPos = new Point(0, 0);
+            Point nextPos = currentPos;
+            double curI = 0, curJ = 0;
+            int mode = 0;
+
+            bool xSet = false, ySet = false, iSet = false, jSet = false;
 
             var tokenRegex = new Regex(@"([GMXYIJ])([\-0-9\.]+)");
             var matches = tokenRegex.Matches(gcodeStr);
 
-            int mode = 0;
-            Point end = start;
-            double I = 0, J = 0;
-
-            for (int k = 0; k < matches.Count; k++)
+            void ExecuteBlock()
             {
-                var m = matches[k];
+                // 何らかのパラメータまたはコマンドがセットされている場合のみ実行
+                if (!xSet && !ySet && !iSet && !jSet) return;
+
+                if (mode == 0)
+                {
+                    // G00: 高速移動 (描画なし)
+                    currentPos = nextPos;
+                }
+                else if (mode == 1)
+                {
+                    // G01: 直線補間
+                    if (currentPos != nextPos)
+                    {
+                        var pf = new PathFigure { StartPoint = currentPos };
+                        pf.Segments.Add(new LineSegment(nextPos, true));
+                        gg.Children.Add(new PathGeometry(new[] { pf }));
+                        currentPos = nextPos;
+                    }
+                }
+                else if (mode == 2 || mode == 3)
+                {
+                    // G02/G03: 円弧補間
+                    double r = Math.Sqrt(curI * curI + curJ * curJ);
+                    // 半径が極端に小さい場合は無視
+                    if (r > 1e-6)
+                    {
+                        double cx = currentPos.X + curI;
+                        double cy = currentPos.Y + curJ;
+
+                        // 開始・終了角度の計算
+                        double startAngle = Math.Atan2(currentPos.Y - cy, currentPos.X - cx);
+                        double endAngle = Math.Atan2(nextPos.Y - cy, nextPos.X - cx);
+
+                        double sweep = endAngle - startAngle;
+                        bool isCW = (mode == 2);
+
+                        // スイープ角の正規化
+                        if (isCW)
+                        {
+                            if (sweep > 0) sweep -= 2 * Math.PI;
+                        }
+                        else
+                        {
+                            if (sweep < 0) sweep += 2 * Math.PI;
+                        }
+
+                        // WPFの座標反転(ScaleY=-1)を考慮した方向
+                        // G02(CW) は通常の座標系では Clockwise だが、
+                        // レイアウト全体の ScaleY=-1 空間では、逆方向の Counterclockwise を
+                        // 指定することで画面上で時計回りに見えるようになる。
+                        SweepDirection dir = (mode == 2) ? SweepDirection.Counterclockwise : SweepDirection.Clockwise;
+                        
+                        // 180度を超える場合は LargeArc を true にする
+                        bool isLargeArc = Math.Abs(sweep) > Math.PI + 0.001;
+
+                        if (currentPos != nextPos)
+                        {
+                            var pf = new PathFigure { StartPoint = currentPos };
+                            pf.Segments.Add(new ArcSegment(nextPos, new Size(r, r), 0, isLargeArc, dir, true));
+                            gg.Children.Add(new PathGeometry(new[] { pf }));
+                        }
+                    }
+                    currentPos = nextPos;
+                }
+
+                // ブロック終了につきフラグとI/Jをリセット
+                xSet = ySet = iSet = jSet = false;
+                curI = 0; curJ = 0;
+            }
+
+            foreach (Match m in matches)
+            {
                 string type = m.Groups[1].Value;
                 if (!double.TryParse(m.Groups[2].Value, out double val)) continue;
 
                 if (type == "G")
                 {
-                    if (val == 0) mode = 0;
-                    else if (val == 1) mode = 1;
-                    else if (val == 2) mode = 2;
-                    else if (val == 3) mode = 3;
+                    ExecuteBlock();
+                    mode = (int)val;
                 }
-                else if (type == "X") end.X = val;
-                else if (type == "Y") end.Y = val;
-                else if (type == "I") I = val;
-                else if (type == "J") J = val;
-
-                bool execute = false;
-                if (k == matches.Count - 1) execute = true;
-                else
+                else if (type == "X")
                 {
-                    string nextType = matches[k + 1].Groups[1].Value;
-                    if (type == "Y" || (type == "X" && matches[k + 1].Groups[1].Value != "Y"))
-                    {
-                        execute = true;
-                    }
+                    if (xSet) ExecuteBlock();
+                    nextPos.X = val;
+                    xSet = true;
                 }
-
-                if (execute)
+                else if (type == "Y")
                 {
-                    if (mode == 0)
-                    {
-                        start = end;
-                    }
-                    else if (mode == 1)
-                    {
-                        if (start != end)
-                        {
-                            var pf = new PathFigure { StartPoint = start };
-                            pf.Segments.Add(new LineSegment(end, true));
-                            gg.Children.Add(new PathGeometry(new[] { pf }));
-                            start = end;
-                        }
-                    }
-                    else if (mode == 2 || mode == 3)
-                    {
-                        double r = Math.Sqrt(I * I + J * J);
-                        if (r > 0)
-                        {
-                            var pf = new PathFigure { StartPoint = start };
-                            pf.Segments.Add(new ArcSegment(end, new Size(r, r), 0, false,
-                                mode == 2 ? SweepDirection.Clockwise : SweepDirection.Counterclockwise, true));
-                            gg.Children.Add(new PathGeometry(new[] { pf }));
-                        }
-                        start = end;
-                        I = 0; J = 0;
-                    }
+                    if (ySet) ExecuteBlock();
+                    nextPos.Y = val;
+                    ySet = true;
+                }
+                else if (type == "I")
+                {
+                    if (iSet) ExecuteBlock();
+                    curI = val;
+                    iSet = true;
+                }
+                else if (type == "J")
+                {
+                    if (jSet) ExecuteBlock();
+                    curJ = val;
+                    jSet = true;
                 }
             }
+            // 最後に残ったブロックを実行
+            ExecuteBlock();
+
             return gg;
         }
     }

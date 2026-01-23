@@ -30,10 +30,13 @@
     <sys:String x:Key="Str_HeaderID">ID</sys:String>
     <sys:String x:Key="Str_HeaderName">ジョブ名</sys:String>
     <sys:String x:Key="Str_HeaderText">印字内容</sys:String>
-    <sys:String x:Key="Str_HeaderX">X (mm)</sys:String>
+    <sys:String x:Key="Str_HeaderX">開始点X (mm)</sys:String>
     <sys:String x:Key="Str_HeaderY">Y (mm)</sys:String>
-    <sys:String x:Key="Str_HeaderH">高さ</sys:String>
+    <sys:String x:Key="Str_HeaderH">文字高さ(mm)</sys:String>
     <sys:String x:Key="Str_HeaderTitle">シーケンス名</sys:String>
     <sys:String x:Key="Str_HeaderCount">ジョブ数</sys:String>
+    <sys:String x:Key="Str_HeaderPX">文字ピッチ X(mm)</sys:String>
+    <sys:String x:Key="Str_HeaderPY">文字ピッチ Y</sys:String>
+    <sys:String x:Key="Str_HeaderRot">回転</sys:String>
 
 </ResourceDictionary>
