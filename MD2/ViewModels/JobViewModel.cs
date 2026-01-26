@@ -1,8 +1,15 @@
 ﻿using System.Windows;
+using System.Windows.Media;
 using MarkingDesigner.Models;
 
 namespace MarkingDesigner.ViewModels
 {
+    public class ColorInfo
+    {
+        public string Name { get; set; } = "";
+        public Brush Brush { get; set; } = Brushes.Black;
+    }
+
     public class JobViewModel : BindableBase
     {
         public DeviceViewModel Device { get; }
@@ -19,6 +26,26 @@ namespace MarkingDesigner.ViewModels
             MarkingFont.Initialized += () => UpdateCalculatedValues();
             UpdateCalculatedValues();
         }
+
+        public static List<ColorInfo> AvailableColors { get; } = new List<ColorInfo>
+        {
+            new ColorInfo { Name = "Black", Brush = Brushes.Black },
+            new ColorInfo { Name = "Red", Brush = Brushes.Red },
+            new ColorInfo { Name = "Blue", Brush = Brushes.Blue },
+            new ColorInfo { Name = "Green", Brush = Brushes.Green },
+            new ColorInfo { Name = "Orange", Brush = Brushes.Orange },
+            new ColorInfo { Name = "Purple", Brush = Brushes.Purple },
+            new ColorInfo { Name = "Brown", Brush = Brushes.Brown },
+            new ColorInfo { Name = "Navy", Brush = Brushes.Navy },
+            new ColorInfo { Name = "Teal", Brush = Brushes.Teal },
+            new ColorInfo { Name = "Maroon", Brush = Brushes.Maroon },
+            new ColorInfo { Name = "Olive", Brush = Brushes.Olive },
+            new ColorInfo { Name = "Gray", Brush = Brushes.Gray },
+            new ColorInfo { Name = "Lime", Brush = Brushes.Lime },
+            new ColorInfo { Name = "Aqua", Brush = Brushes.Aqua },
+            new ColorInfo { Name = "Fuchsia", Brush = Brushes.Fuchsia },
+            new ColorInfo { Name = "Gold", Brush = Brushes.Gold },
+        };
 
         public int JobId { get; set; }
 
@@ -60,11 +87,18 @@ namespace MarkingDesigner.ViewModels
             set { if (SetProperty(ref _pitchY, value)) UpdateCalculatedValues(); }
         }
 
-        private int _rotationType = 0;
+        private int _rotationType = 1;
         public int RotationType
         {
             get => _rotationType;
             set { if (SetProperty(ref _rotationType, value)) UpdateCalculatedValues(); }
+        }
+
+        private Brush _stroke = Brushes.Black;
+        public Brush Stroke
+        {
+            get => _stroke;
+            set => SetProperty(ref _stroke, value);
         }
 
         private MarkingFonts _font = MarkingFonts.FontA;

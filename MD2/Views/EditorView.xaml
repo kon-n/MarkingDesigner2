@@ -4,6 +4,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:bh="clr-namespace:MarkingDesigner.Behaviors"
              xmlns:cv="clr-namespace:MarkingDesigner.Converters"
+             xmlns:vm="clr-namespace:MarkingDesigner.ViewModels"
              xmlns:ctrl="clr-namespace:MarkingDesigner.Views.Controls">
 
     <UserControl.Resources>
@@ -197,7 +198,7 @@
                                                                     PitchX="{Binding PitchX}"
                                                                     PitchY="{Binding PitchY}"
                                                                     RotationType="{Binding RotationType}"
-                                                                    Stroke="Black" StrokeThickness="1"/>
+                                                                    Stroke="{Binding Stroke}" StrokeThickness="1"/>
                                             </Border>
 
                                             <!-- Move Handle Layer: Outside the flip to simplify mouse interaction -->
@@ -234,7 +235,6 @@
                                                 <Setter TargetName="Bd" Property="BorderBrush" Value="#FF00FF00"/>
                                                 <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
                                                 <Setter TargetName="Bd" Property="Background" Value="#2200FF00"/>
-                                                <Setter TargetName="MarkingCtrl" Property="Stroke" Value="#FF00FF00"/>
                                             </DataTrigger>
                                             <!-- Out of Bounds: Red (Overrides selection) -->
                                             <DataTrigger Binding="{Binding IsOutOfBounds}" Value="True">
@@ -317,6 +317,21 @@
                             <ComboBoxItem Content="5: -135°"/>
                             <ComboBoxItem Content="6: 135°"/>
                             <ComboBoxItem Content="7: 45°"/>
+                        </ComboBox>
+
+                        <TextBlock Text="Color" Foreground="{DynamicResource TextBrush}" FontSize="14"/>
+                        <ComboBox SelectedValue="{Binding Stroke}" 
+                                  SelectedValuePath="Brush" 
+                                  ItemsSource="{x:Static vm:JobViewModel.AvailableColors}"
+                                  Margin="0,0,0,15" Height="30">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Width="20" Height="20" Fill="{Binding Brush}" Margin="0,0,10,0" Stroke="Gray" StrokeThickness="0.5"/>
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
                         </ComboBox>
 
                         <TextBlock Text="{DynamicResource Str_PropHeight}" Foreground="{DynamicResource TextBrush}" FontSize="14"/>

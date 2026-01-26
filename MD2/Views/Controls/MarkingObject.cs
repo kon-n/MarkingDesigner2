@@ -52,7 +52,7 @@ namespace MarkingDesigner.Views.Controls
 
         public static readonly DependencyProperty RotationTypeProperty =
             DependencyProperty.Register("RotationType", typeof(int), typeof(MarkingObject),
-            new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure));
+            new FrameworkPropertyMetadata(1, FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure));
         public int RotationType { get { return (int)GetValue(RotationTypeProperty); } set { SetValue(RotationTypeProperty, value); } }
         #endregion
 
