@@ -138,7 +138,7 @@
 
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="{DynamicResource BorderBrush}"/>
 
-            <ScrollViewer Grid.Column="2" Background="#1A1A1A" 
+            <ScrollViewer Grid.Column="2" Background="{DynamicResource WindowBackBrush}" 
                           HorizontalScrollBarVisibility="Auto" 
                           VerticalScrollBarVisibility="Auto"
                           x:Name="MainScrollViewer">
@@ -178,21 +178,24 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid Background="Transparent">
+                                            <Grid.RenderTransform>
+                                                <TranslateTransform X="{Binding OffsetX, Converter={StaticResource mm2dip}}" 
+                                                                    Y="{Binding OffsetY, Converter={StaticResource mm2dip}}"/>
+                                            </Grid.RenderTransform>
                                             <!-- Visual Layer: LayoutTransform enables proper layout sizing after flip -->
                                             <Border x:Name="Bd" 
                                                     BorderThickness="1" 
                                                     BorderBrush="Transparent" 
                                                     Background="Transparent" 
-                                                    Padding="2"
-                                                    HorizontalAlignment="Left"
-                                                    VerticalAlignment="Bottom">
+                                                    Padding="2">
+
                                                 <Border.LayoutTransform>
                                                     <ScaleTransform ScaleY="-1"/>
                                                 </Border.LayoutTransform>
                                                 <ctrl:MarkingObject x:Name="MarkingCtrl" Text="{Binding Marking.Text}" FontType="{Binding Font}"
-                                                                    CharHeight="{Binding Height, Converter={StaticResource mm2dip}}"
-                                                                    PitchX="{Binding PitchX, Converter={StaticResource mm2dip}}"
-                                                                    PitchY="{Binding PitchY, Converter={StaticResource mm2dip}}"
+                                                                    CharHeight="{Binding Height}"
+                                                                    PitchX="{Binding PitchX}"
+                                                                    PitchY="{Binding PitchY}"
                                                                     RotationType="{Binding RotationType}"
                                                                     Stroke="Black" StrokeThickness="1"/>
                                             </Border>

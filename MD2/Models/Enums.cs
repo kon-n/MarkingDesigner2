@@ -8,7 +8,8 @@
     public class NCData
     {
         public int Code { get; set; }
-        public string GCode { get; set; }
+        public string GCode { get; set; } = string.Empty;
+        public System.Windows.Rect Bounds { get; set; } = System.Windows.Rect.Empty;
 
         public NCData(int code, string gcode)
         {

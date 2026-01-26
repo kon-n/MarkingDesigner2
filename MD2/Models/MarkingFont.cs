@@ -12,6 +12,7 @@ namespace MarkingDesigner.Models
         public static Dictionary<MarkingFonts, Dictionary<byte, NCData>> Fonts { get; private set; } = new();
 
         public static bool IsInitialized { get; private set; } = false;
+        public static event Action? Initialized;
 
         public static void Initialize()
         {
@@ -38,6 +39,7 @@ namespace MarkingDesigner.Models
             }
 
             IsInitialized = true;
+            Initialized?.Invoke();
         }
 
         private static void LoadFontFile(MarkingFonts font, string filePath)
@@ -64,7 +66,9 @@ namespace MarkingDesigner.Models
                     if (currentCode != -1 && currentGCodeLines.Count > 0)
                     {
                         string joinedGCode = string.Join(" ", currentGCodeLines);
-                        dict[(byte)currentCode] = new NCData(currentCode, joinedGCode);
+                        var nc = new NCData(currentCode, joinedGCode);
+                        nc.Bounds = GCodeUtility.CalculateBounds(joinedGCode);
+                        dict[(byte)currentCode] = nc;
                     }
 
                     if (int.TryParse(match.Groups[1].Value, out int code))
@@ -87,14 +91,18 @@ namespace MarkingDesigner.Models
             if (currentCode != -1 && currentGCodeLines.Count > 0)
             {
                 string joinedGCode = string.Join(" ", currentGCodeLines);
-                dict[(byte)currentCode] = new NCData(currentCode, joinedGCode);
+                var nc = new NCData(currentCode, joinedGCode);
+                nc.Bounds = GCodeUtility.CalculateBounds(joinedGCode);
+                dict[(byte)currentCode] = nc;
             }
         }
 
         private static void CreateMockData()
         {
             var dict = Fonts[MarkingFonts.FontA];
-            dict[65] = new NCData(65, "G00 X0 Y0 G01 X50 Y100 G01 X100 Y0");
+            var nc = new NCData(65, "G00 X0 Y0 G01 X50 Y100 G01 X100 Y0");
+            nc.Bounds = GCodeUtility.CalculateBounds(nc.GCode);
+            dict[65] = nc;
         }
     }
 }
