@@ -5,8 +5,8 @@
              xmlns:bh="clr-namespace:MarkingDesigner.Behaviors"
              xmlns:cv="clr-namespace:MarkingDesigner.Converters"
              xmlns:vm="clr-namespace:MarkingDesigner.ViewModels"
+             xmlns:models="clr-namespace:MarkingDesigner.Models"
              xmlns:ctrl="clr-namespace:MarkingDesigner.Views.Controls">
-
     <UserControl.Resources>
         <cv:MmToDipConverter x:Key="mm2dip"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
@@ -270,74 +270,198 @@
                         <TextBlock Text="{DynamicResource Str_PropTitle}" Foreground="{DynamicResource SelectionBrush}" FontWeight="Bold" FontSize="16" Margin="0,0,0,15"/>
 
                         <TextBlock Text="{DynamicResource Str_PropName}" Foreground="{DynamicResource TextBrush}" FontSize="14"/>
-                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Height="30" FontSize="14" VerticalContentAlignment="Center"/>
+                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Height="25" FontSize="14" VerticalContentAlignment="Center"/>
 
                         <TextBlock Text="{DynamicResource Str_PropText}" Foreground="{DynamicResource TextBrush}" FontSize="14"/>
-                        <TextBox Text="{Binding Marking.Text, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15" Height="30" FontSize="14" VerticalContentAlignment="Center"/>
+                        <TextBox Text="{Binding Marking.Text, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Height="25" FontSize="14" VerticalContentAlignment="Center"/>
 
-                        <Grid Margin="0,0,0,15">
+                        <Grid Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition Width="10"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="{DynamicResource Str_PropX}" Foreground="{DynamicResource TextBrush}" FontSize="14"/>
-                                <TextBox Text="{Binding StartX, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" Height="30" FontSize="14" VerticalContentAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Str_PropX}" Foreground="{DynamicResource TextBrush}" FontSize="13"/>
+                                <TextBox Text="{Binding StartX, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" Height="25" FontSize="14" VerticalContentAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="{DynamicResource Str_PropY}" Foreground="{DynamicResource TextBrush}" FontSize="14"/>
-                                <TextBox Text="{Binding StartY, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" Height="30" FontSize="14" VerticalContentAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Str_PropY}" Foreground="{DynamicResource TextBrush}" FontSize="13"/>
+                                <TextBox Text="{Binding StartY, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" Height="25" FontSize="14" VerticalContentAlignment="Center"/>
                             </StackPanel>
                         </Grid>
 
-                        <Grid Margin="0,0,0,15">
+                        <Grid Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition Width="10"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="{DynamicResource Str_PropPitchX}" Foreground="{DynamicResource TextBrush}" FontSize="14"/>
-                                <TextBox Text="{Binding PitchX, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" Height="30" FontSize="14" VerticalContentAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Str_PropPitchX}" Foreground="{DynamicResource TextBrush}" FontSize="13"/>
+                                <TextBox Text="{Binding PitchX, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" Height="25" FontSize="14" VerticalContentAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="{DynamicResource Str_PropPitchY}" Foreground="{DynamicResource TextBrush}" FontSize="14"/>
-                                <TextBox Text="{Binding PitchY, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" Height="30" FontSize="14" VerticalContentAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Str_PropPitchY}" Foreground="{DynamicResource TextBrush}" FontSize="13"/>
+                                <TextBox Text="{Binding PitchY, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" Height="25" FontSize="14" VerticalContentAlignment="Center"/>
                             </StackPanel>
                         </Grid>
 
-                        <TextBlock Text="Rotation" Foreground="{DynamicResource TextBrush}" FontSize="14"/>
-                        <ComboBox SelectedIndex="{Binding RotationType}" Margin="0,0,0,15" Height="30" FontSize="14" VerticalContentAlignment="Center">
-                            <ComboBoxItem Content="0: 0°"/>
-                            <ComboBoxItem Content="1: -90°"/>
-                            <ComboBoxItem Content="2: 180°"/>
-                            <ComboBoxItem Content="3: 90°"/>
-                            <ComboBoxItem Content="4: -45°"/>
-                            <ComboBoxItem Content="5: -135°"/>
-                            <ComboBoxItem Content="6: 135°"/>
-                            <ComboBoxItem Content="7: 45°"/>
-                        </ComboBox>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="{DynamicResource Str_PropHeight}" Foreground="{DynamicResource TextBrush}" FontSize="13"/>
+                                <TextBox Text="{Binding Height, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" Height="25" FontSize="14" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Rotation" Foreground="{DynamicResource TextBrush}" FontSize="13"/>
+                                <ComboBox SelectedIndex="{Binding RotationType}" Height="25" FontSize="12" VerticalContentAlignment="Center">
+                                    <ComboBoxItem Content="0: 0°"/>
+                                    <ComboBoxItem Content="1: -90°"/>
+                                    <ComboBoxItem Content="2: 180°"/>
+                                    <ComboBoxItem Content="3: 90°"/>
+                                    <ComboBoxItem Content="4: -45°"/>
+                                    <ComboBoxItem Content="5: -135°"/>
+                                    <ComboBoxItem Content="6: 135°"/>
+                                    <ComboBoxItem Content="7: 45°"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
 
-                        <TextBlock Text="Color" Foreground="{DynamicResource TextBrush}" FontSize="14"/>
-                        <ComboBox SelectedValue="{Binding Stroke}" 
-                                  SelectedValuePath="Brush" 
-                                  ItemsSource="{x:Static vm:JobViewModel.AvailableColors}"
-                                  Margin="0,0,0,15" Height="30">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Rectangle Width="20" Height="20" Fill="{Binding Brush}" Margin="0,0,10,0" Stroke="Gray" StrokeThickness="0.5"/>
-                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Font" Foreground="{DynamicResource TextBrush}" FontSize="13"/>
+                                <ComboBox SelectedItem="{Binding Font}" 
+                                          ItemsSource="{x:Static vm:JobViewModel.AllMarkingFonts}" 
+                                          Height="25"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Color" Foreground="{DynamicResource TextBrush}" FontSize="13"/>
+                                <ComboBox SelectedValue="{Binding Stroke}" SelectedValuePath="Brush" ItemsSource="{x:Static vm:JobViewModel.AvailableColors}" Height="25">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Rectangle Width="15" Height="15" Fill="{Binding Brush}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <Expander Header="Trajectory &amp; Speed" IsExpanded="True" Margin="0,5,0,5" Foreground="{DynamicResource TextBrush}">
+                            <StackPanel Margin="5">
+                                <TextBlock Text="Trajectory Type" FontSize="12"/>
+                                <ComboBox ItemsSource="{x:Static vm:JobViewModel.AllTrajectories}"
+                                          SelectedItem="{Binding Trajectory}" Margin="0,0,0,5"/>
+                                
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Speed" FontSize="12"/>
+                                        <TextBox Text="{Binding Speed, StringFormat=N0}" Height="25"/>
                                     </StackPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="EndX" FontSize="12"/>
+                                        <TextBox Text="{Binding EndX, StringFormat=N1}" Height="25"/>
+                                    </StackPanel>
+                                </Grid>
+                                <TextBlock Text="EndY" FontSize="12" Margin="0,5,0,0"/>
+                                <TextBox Text="{Binding EndY, StringFormat=N1}" Height="25"/>
+                            </StackPanel>
+                        </Expander>
 
-                        <TextBlock Text="{DynamicResource Str_PropHeight}" Foreground="{DynamicResource TextBrush}" FontSize="14"/>
-                        <TextBox Text="{Binding Height, UpdateSourceTrigger=PropertyChanged, StringFormat=N1}" Margin="0,0,0,15" Height="30" FontSize="14" VerticalContentAlignment="Center"/>
+                        <Expander Header="Arc &amp; Shape" IsExpanded="False" Margin="0,5,0,5" Foreground="{DynamicResource TextBrush}">
+                            <StackPanel Margin="5">
+                                <CheckBox Content="Enable Line" IsChecked="{Binding IsLine}" Margin="0,0,0,5"/>
+                                <CheckBox Content="Enable Arc" IsChecked="{Binding IsArc}" Margin="0,0,0,5"/>
+                                <TextBlock Text="Arc Center X/Y" FontSize="12"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Text="{Binding ArcCenterX, StringFormat=N1}" Height="25"/>
+                                    <TextBox Grid.Column="2" Text="{Binding ArcCenterY, StringFormat=N1}" Height="25"/>
+                                </Grid>
+                                <TextBlock Text="Arc Angle Pitch (deg)" FontSize="12" Margin="0,5,0,0"/>
+                                <TextBox Text="{Binding ArcAnglePitch, StringFormat=N1}" Height="25"/>
+                            </StackPanel>
+                        </Expander>
 
-                        <CheckBox Content="{DynamicResource Str_PropInc}" IsChecked="{Binding Marking.IsIncrement}" Foreground="{DynamicResource TextBrush}" FontSize="14">
+                        <Expander Header="Range Settings" IsExpanded="False" Margin="0,5,0,5" Foreground="{DynamicResource TextBrush}">
+                            <Grid Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Row="0" Grid.Column="1">
+                                    <TextBlock Text="Top" FontSize="10" HorizontalAlignment="Center"/>
+                                    <TextBox Text="{Binding RangeTop, StringFormat=N1}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Grid.Column="0">
+                                    <TextBlock Text="Left" FontSize="10"/>
+                                    <TextBox Text="{Binding RangeLeft, StringFormat=N1}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="1" Grid.Column="2">
+                                    <TextBlock Text="Right" FontSize="10"/>
+                                    <TextBox Text="{Binding RangeRight, StringFormat=N1}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="1">
+                                    <TextBlock Text="Bottom" FontSize="10" HorizontalAlignment="Center"/>
+                                    <TextBox Text="{Binding RangeBottom, StringFormat=N1}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Expander>
+
+                        <Expander Header="Advanced Increment" IsExpanded="False" Margin="0,5,0,10" Foreground="{DynamicResource TextBrush}">
+                            <StackPanel Margin="5">
+                                <TextBlock Text="Display Format" FontSize="12"/>
+                                <ComboBox SelectedItem="{Binding IncDisplay}" ItemsSource="{x:Static vm:JobViewModel.AllIncDisplays}" Margin="0,0,0,5"/>
+                                
+                                <TextBlock Text="Reset Condition" FontSize="12"/>
+                                <ComboBox SelectedItem="{Binding IncReset}" ItemsSource="{x:Static vm:JobViewModel.AllIncResets}" Margin="0,0,0,5"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Digits (1-10)" FontSize="12"/>
+                                        <TextBox Text="{Binding IncDigits}" Height="25"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Current Val" FontSize="12"/>
+                                        <TextBox Text="{Binding IncCurrentValue}" Height="25"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Expander>
+
+                        <TextBlock Text="Calendar Settings" Foreground="{DynamicResource TextBrush}" FontSize="14"/>
+                        <TextBox Text="{Binding CalendarString}" Margin="0,0,0,15" Height="25" VerticalContentAlignment="Center"/>
+
+                        <CheckBox Content="{DynamicResource Str_PropInc}" IsChecked="{Binding Marking.IsIncrement}" Foreground="{DynamicResource TextBrush}" FontSize="14" Margin="0,0,0,10">
                             <CheckBox.LayoutTransform>
                                 <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
                             </CheckBox.LayoutTransform>

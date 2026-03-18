@@ -28,9 +28,9 @@ namespace MarkingDesigner.Models
             try
             {
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                LoadFontFile(MarkingFonts.FontA, Path.Combine(baseDir, "Fonts", "GG110712411.ASC"));
-                LoadFontFile(MarkingFonts.FontB, Path.Combine(baseDir, "Fonts", "GG110712412.ASC"));
-                LoadFontFile(MarkingFonts.FontC, Path.Combine(baseDir, "Fonts", "GG110712413.ASC"));
+                LoadFontFile(MarkingFonts.Font1, Path.Combine(baseDir, "Fonts", "GG110712411.ASC"));
+                LoadFontFile(MarkingFonts.Font2, Path.Combine(baseDir, "Fonts", "GG110712412.ASC"));
+                LoadFontFile(MarkingFonts.Font3, Path.Combine(baseDir, "Fonts", "GG110712413.ASC"));
             }
             catch (Exception ex)
             {
@@ -99,7 +99,7 @@ namespace MarkingDesigner.Models
 
         private static void CreateMockData()
         {
-            var dict = Fonts[MarkingFonts.FontA];
+            var dict = Fonts[MarkingFonts.Font1];
             var nc = new NCData(65, "G00 X0 Y0 G01 X50 Y100 G01 X100 Y0");
             nc.Bounds = GCodeUtility.CalculateBounds(nc.GCode);
             dict[65] = nc;

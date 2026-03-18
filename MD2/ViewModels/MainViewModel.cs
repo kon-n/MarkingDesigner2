@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -12,6 +12,9 @@ namespace MarkingDesigner.ViewModels
         public DeviceViewModel Device { get; } = new DeviceViewModel();
         public ObservableCollection<SequenceViewModel> Sequences { get; } = new ObservableCollection<SequenceViewModel>();
         public ObservableCollection<JobViewModel> AllJobs { get; } = new ObservableCollection<JobViewModel>();
+
+        // 編集履歴管理（Undo/Redo 用）
+        public EditHistoryManager History { get; } = new EditHistoryManager();
 
         // 修正: 初期化前にアクセスされる可能性を考慮し、null! で警告抑制するか、Null許容にする
         private SequenceViewModel _currentSequence = null!;
@@ -62,6 +65,8 @@ namespace MarkingDesigner.ViewModels
         public ICommand DeleteJobCommand { get; }
         public ICommand NextSeqCommand { get; }
         public ICommand PrevSeqCommand { get; }
+        public ICommand UndoCommand { get; }
+        public ICommand RedoCommand { get; }
 
         public MainViewModel()
         {
@@ -72,6 +77,9 @@ namespace MarkingDesigner.ViewModels
             DeleteJobCommand = new RelayCommand<object>(_ => RemoveJobFromSequence(), _ => SelectedJob != null);
             NextSeqCommand = new RelayCommand<object>(_ => MoveSequence(1));
             PrevSeqCommand = new RelayCommand<object>(_ => MoveSequence(-1));
+
+            UndoCommand = new RelayCommand<object>(_ => History.Undo(), _ => History.CanUndo);
+            RedoCommand = new RelayCommand<object>(_ => History.Redo(), _ => History.CanRedo);
 
             InitializeFixedMemory();
         }
@@ -110,14 +118,15 @@ namespace MarkingDesigner.ViewModels
         {
             if (CurrentSequence == null || JobToAdd == null) return;
             if (CurrentSequence.Jobs.Contains(JobToAdd)) { SelectedJob = JobToAdd; return; }
-            CurrentSequence.Jobs.Add(JobToAdd);
+
+            History.Do(new AddJobToSequenceCommand(CurrentSequence, JobToAdd));
             SelectedJob = JobToAdd;
         }
 
         private void RemoveJobFromSequence()
         {
             if (SelectedJob == null || CurrentSequence == null) return;
-            CurrentSequence.Jobs.Remove(SelectedJob);
+            History.Do(new RemoveJobFromSequenceCommand(CurrentSequence, SelectedJob));
             SelectedJob = null;
         }
 

@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Media;
 using MarkingDesigner.Models;
 
@@ -46,6 +46,11 @@ namespace MarkingDesigner.ViewModels
             new ColorInfo { Name = "Fuchsia", Brush = Brushes.Fuchsia },
             new ColorInfo { Name = "Gold", Brush = Brushes.Gold },
         };
+
+        public static MarkingFonts[] AllMarkingFonts => (MarkingFonts[])Enum.GetValues(typeof(MarkingFonts));
+        public static Trajectory[] AllTrajectories => (Trajectory[])Enum.GetValues(typeof(Trajectory));
+        public static IncrementDisplay[] AllIncDisplays => (IncrementDisplay[])Enum.GetValues(typeof(IncrementDisplay));
+        public static IncrementReset[] AllIncResets => (IncrementReset[])Enum.GetValues(typeof(IncrementReset));
 
         public int JobId { get; set; }
 
@@ -101,12 +106,94 @@ namespace MarkingDesigner.ViewModels
             set => SetProperty(ref _stroke, value);
         }
 
-        private MarkingFonts _font = MarkingFonts.FontA;
+        private MarkingFonts _font = MarkingFonts.Font1;
         public MarkingFonts Font 
         { 
             get => _font; 
             set { if (SetProperty(ref _font, value)) UpdateCalculatedValues(); } 
         }
+
+        private double _endX;
+        public double EndX { get => _endX; set => SetProperty(ref _endX, Math.Round(value, 1)); }
+
+        private double _endY;
+        public double EndY { get => _endY; set => SetProperty(ref _endY, Math.Round(value, 1)); }
+
+        private double _speed = 1000;
+        public double Speed { get => _speed; set => SetProperty(ref _speed, Math.Round(value / 100.0) * 100.0); }
+
+        private Trajectory _trajectory = Trajectory.Linear;
+        public Trajectory Trajectory { get => _trajectory; set => SetProperty(ref _trajectory, value); }
+
+        private bool _isLine;
+        public bool IsLine { get => _isLine; set => SetProperty(ref _isLine, value); }
+
+        private bool _isArc;
+        public bool IsArc { get => _isArc; set => SetProperty(ref _isArc, value); }
+
+        private double _arcCenterX;
+        public double ArcCenterX { get => _arcCenterX; set => SetProperty(ref _arcCenterX, Math.Round(value, 1)); }
+
+        private double _arcCenterY;
+        public double ArcCenterY { get => _arcCenterY; set => SetProperty(ref _arcCenterY, Math.Round(value, 1)); }
+
+        private double _arcAnglePitch;
+        public double ArcAnglePitch { get => _arcAnglePitch; set => SetProperty(ref _arcAnglePitch, Math.Round(value, 1)); }
+
+        // 3点入力用座標（MarkingSheet の Arc AX/AY/BX/BY/CX/CY に対応）
+        private double _arcAx;
+        public double ArcAx { get => _arcAx; set => SetProperty(ref _arcAx, Math.Round(value, 1)); }
+
+        private double _arcAy;
+        public double ArcAy { get => _arcAy; set => SetProperty(ref _arcAy, Math.Round(value, 1)); }
+
+        private double _arcBx;
+        public double ArcBx { get => _arcBx; set => SetProperty(ref _arcBx, Math.Round(value, 1)); }
+
+        private double _arcBy;
+        public double ArcBy { get => _arcBy; set => SetProperty(ref _arcBy, Math.Round(value, 1)); }
+
+        private double _arcCx;
+        public double ArcCx { get => _arcCx; set => SetProperty(ref _arcCx, Math.Round(value, 1)); }
+
+        private double _arcCy;
+        public double ArcCy { get => _arcCy; set => SetProperty(ref _arcCy, Math.Round(value, 1)); }
+
+        private double _rangeTop;
+        public double RangeTop { get => _rangeTop; set => SetProperty(ref _rangeTop, Math.Round(value, 1)); }
+
+        private double _rangeBottom;
+        public double RangeBottom { get => _rangeBottom; set => SetProperty(ref _rangeBottom, Math.Round(value, 1)); }
+
+        private double _rangeLeft;
+        public double RangeLeft { get => _rangeLeft; set => SetProperty(ref _rangeLeft, Math.Round(value, 1)); }
+
+        private double _rangeRight;
+        public double RangeRight { get => _rangeRight; set => SetProperty(ref _rangeRight, Math.Round(value, 1)); }
+
+        private string _calendarString = "";
+        public string CalendarString { get => _calendarString; set => SetProperty(ref _calendarString, value); }
+
+        private IncrementFormat _incFormat = IncrementFormat.ZeroFill;
+        public IncrementFormat IncFormat { get => _incFormat; set => SetProperty(ref _incFormat, value); }
+
+        private string _incHeader = "";
+        public string IncHeader { get => _incHeader; set => SetProperty(ref _incHeader, value); }
+
+        private string _incFooter = "";
+        public string IncFooter { get => _incFooter; set => SetProperty(ref _incFooter, value); }
+
+        private int _incCurrentValue;
+        public int IncCurrentValue { get => _incCurrentValue; set => SetProperty(ref _incCurrentValue, value); }
+
+        private IncrementDisplay _incDisplay = IncrementDisplay.Numeric;
+        public IncrementDisplay IncDisplay { get => _incDisplay; set => SetProperty(ref _incDisplay, value); }
+
+        private int _incDigits = 1;
+        public int IncDigits { get => _incDigits; set => SetProperty(ref _incDigits, Math.Clamp(value, 1, 10)); }
+
+        private IncrementReset _incReset = IncrementReset.None;
+        public IncrementReset IncReset { get => _incReset; set => SetProperty(ref _incReset, value); }
 
         private MarkingData _marking = new MarkingData();
         public MarkingData Marking
@@ -114,6 +201,7 @@ namespace MarkingDesigner.ViewModels
             get => _marking;
             set
             {
+                if (value == null) return; // Disallow null
                 if (_marking != null) _marking.PropertyChanged -= OnMarkingPropertyChanged;
                 if (SetProperty(ref _marking, value))
                 {
