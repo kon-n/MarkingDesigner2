@@ -47,7 +47,7 @@ namespace MarkingDesigner.Views.Controls
 
         public static readonly DependencyProperty FontTypeProperty =
             DependencyProperty.Register("FontType", typeof(MarkingFonts), typeof(MarkingObject),
-            new FrameworkPropertyMetadata(MarkingFonts.FontA, FrameworkPropertyMetadataOptions.AffectsRender));
+            new FrameworkPropertyMetadata(MarkingFonts.Font1, FrameworkPropertyMetadataOptions.AffectsRender));
         public MarkingFonts FontType { get { return (MarkingFonts)GetValue(FontTypeProperty); } set { SetValue(FontTypeProperty, value); } }
 
         public static readonly DependencyProperty RotationTypeProperty =
@@ -129,15 +129,18 @@ namespace MarkingDesigner.Views.Controls
             if (b.IsEmpty) return;
 
             // Normalize top-left to (0,0) for the local element spacing
+            // The geometry itself is built with the first character's center at (0,0)
             dc.PushTransform(new TranslateTransform(-b.Left, -b.Top));
             
             // Draw Text
             dc.DrawGeometry(null, new Pen(Stroke, StrokeThickness), geo);
 
-            // Draw center dot (1mm diameter)
+            // Draw center dot (1mm diameter) at the center of the first character
+            // The center of the first character in 'geo' is (0,0).
+            // After the transform(-b.Left, -b.Top), it is at (-b.Left, -b.Top).
             double mm2dip = 96.0 / 25.4;
             double dotRadius = (1.0 * mm2dip) / 2.0; 
-            dc.DrawEllipse(Brushes.Red, null, new Point(0, 0), dotRadius, dotRadius);
+            dc.DrawEllipse(Brushes.Red, null, new Point(-b.Left, -b.Top), dotRadius, dotRadius);
 
             dc.Pop();
         }
