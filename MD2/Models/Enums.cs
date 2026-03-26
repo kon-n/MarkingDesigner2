@@ -1,4 +1,4 @@
-﻿namespace MarkingDesigner.Models
+namespace MarkingDesigner.Models
 {
     public enum MarkingFonts { Font1, Font2, Font3 }
     public enum Quadrants { _1st, _2nd, _3rd, _4th }
@@ -8,6 +8,14 @@
     public enum IncrementFormat { ZeroFill, LeftAlign, RightAlign }
     public enum IncrementDisplay { Numeric, Hex, Alpha }
     public enum IncrementReset { None, Monthly, Daily, Hourly }
+
+    /// <summary>2次元コードの種類（シーケンス文字列では Q / D / U に相当）。</summary>
+    public enum TwoDSymbolKind
+    {
+        QrCode,
+        DataMatrix,
+        MicroQr
+    }
 
     // 1文字分のデータ定義
     public class NCData

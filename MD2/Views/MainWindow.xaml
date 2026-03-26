@@ -119,7 +119,8 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="{DynamicResource Str_HeaderID}" Binding="{Binding SequenceId}" Width="60" IsReadOnly="True" ElementStyle="{StaticResource CellTextStyle}"/>
                             <DataGridTextColumn Header="{DynamicResource Str_HeaderTitle}" Binding="{Binding Title}" Width="*" ElementStyle="{StaticResource CellTextStyle}"/>
-                            <DataGridTextColumn Header="{DynamicResource Str_HeaderCount}" Binding="{Binding Jobs.Count}" Width="80" IsReadOnly="True" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderSeqString}" Binding="{Binding SequenceString}" Width="2*" IsReadOnly="True" ElementStyle="{StaticResource CellTextStyle}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str_HeaderCount}" Binding="{Binding Entries.Count}" Width="80" IsReadOnly="True" ElementStyle="{StaticResource CellTextStyle}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

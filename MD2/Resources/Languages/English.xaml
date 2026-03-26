@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
@@ -14,6 +14,10 @@
     <sys:String x:Key="Str_Prev">◀ PREV</sys:String>
     <sys:String x:Key="Str_Next">NEXT ▶</sys:String>
     <sys:String x:Key="Str_LabelAddFromList">Add Job from List:</sys:String>
+    <sys:String x:Key="Str_LabelPlacementJob">Placement job</sys:String>
+    <sys:String x:Key="Str_HintPrimaryJobOptional">Job-less commands like H/W can be added without selecting a job.</sys:String>
+    <sys:String x:Key="Str_HintPrimaryJobJcp">Select a target job here only for J/C/P commands.</sys:String>
+    <sys:String x:Key="Str_HintJobPickerUsage">Used as target job for J/C/P, and as source selector for Q/D/U/F.</sys:String>
     <sys:String x:Key="Str_BtnAdd">✚ ADD</sys:String>
     <sys:String x:Key="Str_BtnRemove">🗑 REMOVE from Sequence</sys:String>
 
@@ -34,9 +38,56 @@
     <sys:String x:Key="Str_HeaderY">Y (mm)</sys:String>
     <sys:String x:Key="Str_HeaderH">Height</sys:String>
     <sys:String x:Key="Str_HeaderTitle">Sequence Title</sys:String>
+    <sys:String x:Key="Str_HeaderSeqString">Sequence String</sys:String>
     <sys:String x:Key="Str_HeaderCount">Job Count</sys:String>
     <sys:String x:Key="Str_HeaderPX">Pitch X (mm)</sys:String>
     <sys:String x:Key="Str_HeaderPY">Pitch Y (mm)</sys:String>
     <sys:String x:Key="Str_HeaderRot">Rot</sys:String>
+
+    <sys:String x:Key="Str_HeaderSeqRole">Command</sys:String>
+    <sys:String x:Key="Str_Header2DKind">2D</sys:String>
+    <sys:String x:Key="Str_Header2DV">V</sys:String>
+    <sys:String x:Key="Str_Header2DSrc">Src</sys:String>
+    <sys:String x:Key="Str_BtnSeqUp">▲ Up</sys:String>
+    <sys:String x:Key="Str_BtnSeqDown">▼ Down</sys:String>
+    <sys:String x:Key="Str_LabelSeqRole">Command (for the next row to add)</sys:String>
+    <sys:String x:Key="Str_HintSeqRolePerRow">Each row has its own command; edit the Command column for existing rows. To use multiple Q/D/U/F commands, keep adding rows with different jobs/params.</sys:String>
+    <sys:String x:Key="Str_LabelTwoDBlockTitle">2D code (Q / D / U and V)</sys:String>
+    <sys:String x:Key="Str_LabelTwoDKind">Symbol</sys:String>
+    <sys:String x:Key="Str_LabelSymbolSizeV">Symbol size (V command, 1–99)</sys:String>
+    <sys:String x:Key="Str_LabelTwoDSource">Source jobs (payload)</sys:String>
+    <sys:String x:Key="Str_HintTwoDSource">Pick a job above, then use Add to include it as a source.</sys:String>
+    <sys:String x:Key="Str_HintTwoDSourceEntry">Pick a job in the list on the left, then Add here.</sys:String>
+    <sys:String x:Key="Str_BtnAddTwoDSource">Add source</sys:String>
+    <sys:String x:Key="Str_MsgTwoDNeedsSources">Q/D/U/F commands require at least one source job.</sys:String>
+    <sys:String x:Key="Str_MsgPrimaryJobRequired">This command requires a target job.</sys:String>
+    <sys:String x:Key="Str_SeqEntryTitle">Sequence entry</sys:String>
+
+    <sys:String x:Key="Str_Cmd_P">P - parameter reference</sys:String>
+    <sys:String x:Key="Str_Cmd_C">C - character reference</sys:String>
+    <sys:String x:Key="Str_Cmd_J">J - mark</sys:String>
+    <sys:String x:Key="Str_Cmd_F">F - string join</sys:String>
+    <sys:String x:Key="Str_Cmd_Q">Q - QR code</sys:String>
+    <sys:String x:Key="Str_Cmd_D">D - DataMatrix</sys:String>
+    <sys:String x:Key="Str_Cmd_U">U - microQR</sys:String>
+    <sys:String x:Key="Str_Cmd_A">A - circle move</sys:String>
+    <sys:String x:Key="Str_Cmd_B">B - optimize move</sys:String>
+    <sys:String x:Key="Str_Cmd_E">E - select pen</sys:String>
+    <sys:String x:Key="Str_Cmd_G">G - output marked string</sys:String>
+    <sys:String x:Key="Str_Cmd_H">H - home</sys:String>
+    <sys:String x:Key="Str_Cmd_I">I - system info</sys:String>
+    <sys:String x:Key="Str_Cmd_K">K - disable increment</sys:String>
+    <sys:String x:Key="Str_Cmd_M">M - move</sys:String>
+    <sys:String x:Key="Str_Cmd_N">N - fold digits</sys:String>
+    <sys:String x:Key="Str_Cmd_O">O - select font</sys:String>
+    <sys:String x:Key="Str_Cmd_R">R - reader</sys:String>
+    <sys:String x:Key="Str_Cmd_S">S - line move</sys:String>
+    <sys:String x:Key="Str_Cmd_T">T - overwrite count</sys:String>
+    <sys:String x:Key="Str_Cmd_W">W - pause</sys:String>
+
+    <sys:String x:Key="Str_TwoD_QR">QR (Q)</sys:String>
+    <sys:String x:Key="Str_TwoD_DM">DataMatrix (D)</sys:String>
+    <sys:String x:Key="Str_TwoD_MicroQR">microQR (U)</sys:String>
+    <sys:String x:Key="Str_HintMultipleTwoD">Add one row per 2D mark (same or different jobs).</sys:String>
 
 </ResourceDictionary>

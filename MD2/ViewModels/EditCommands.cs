@@ -1,5 +1,4 @@
 using System;
-using MarkingDesigner.Models;
 
 namespace MarkingDesigner.ViewModels
 {
@@ -23,60 +22,87 @@ namespace MarkingDesigner.ViewModels
         public void Undo() => _setter(_job, _oldValue);
     }
 
-    // シーケンスへの Job 追加
+    // シーケンスへのエントリ追加
     public class AddJobToSequenceCommand : IEditCommand
     {
         private readonly SequenceViewModel _sequence;
-        private readonly JobViewModel _job;
+        private readonly SequenceJobEntry _entry;
         private int _insertIndex;
 
-        public AddJobToSequenceCommand(SequenceViewModel sequence, JobViewModel job, int? index = null)
+        public AddJobToSequenceCommand(SequenceViewModel sequence, SequenceJobEntry entry, int? index = null)
         {
             _sequence = sequence;
-            _job = job;
+            _entry = entry;
             _insertIndex = index ?? -1;
         }
 
         public void Execute()
         {
-            if (_insertIndex < 0 || _insertIndex > _sequence.Jobs.Count)
-                _insertIndex = _sequence.Jobs.Count;
-            if (!_sequence.Jobs.Contains(_job))
-                _sequence.Jobs.Insert(_insertIndex, _job);
+            if (_insertIndex < 0 || _insertIndex > _sequence.Entries.Count)
+                _insertIndex = _sequence.Entries.Count;
+            _sequence.Entries.Insert(_insertIndex, _entry);
         }
 
         public void Undo()
         {
-            if (_insertIndex >= 0 && _insertIndex < _sequence.Jobs.Count)
-                _sequence.Jobs.RemoveAt(_insertIndex);
+            if (_insertIndex >= 0 && _insertIndex < _sequence.Entries.Count)
+                _sequence.Entries.RemoveAt(_insertIndex);
         }
     }
 
-    // シーケンスからの Job 削除
+    // シーケンスからのエントリ削除
     public class RemoveJobFromSequenceCommand : IEditCommand
     {
         private readonly SequenceViewModel _sequence;
-        private readonly JobViewModel _job;
+        private readonly SequenceJobEntry _entry;
         private int _oldIndex;
 
-        public RemoveJobFromSequenceCommand(SequenceViewModel sequence, JobViewModel job)
+        public RemoveJobFromSequenceCommand(SequenceViewModel sequence, SequenceJobEntry entry)
         {
             _sequence = sequence;
-            _job = job;
+            _entry = entry;
         }
 
         public void Execute()
         {
-            _oldIndex = _sequence.Jobs.IndexOf(_job);
+            _oldIndex = _sequence.Entries.IndexOf(_entry);
             if (_oldIndex >= 0)
-                _sequence.Jobs.RemoveAt(_oldIndex);
+                _sequence.Entries.RemoveAt(_oldIndex);
         }
 
         public void Undo()
         {
-            if (_oldIndex >= 0 && _oldIndex <= _sequence.Jobs.Count)
-                _sequence.Jobs.Insert(_oldIndex, _job);
+            if (_oldIndex >= 0 && _oldIndex <= _sequence.Entries.Count)
+                _sequence.Entries.Insert(_oldIndex, _entry);
+        }
+    }
+
+    // シーケンス内の順序移動
+    public class MoveSequenceEntryCommand : IEditCommand
+    {
+        private readonly SequenceViewModel _sequence;
+        private readonly int _fromIndex;
+        private readonly int _toIndex;
+
+        public MoveSequenceEntryCommand(SequenceViewModel sequence, int fromIndex, int toIndex)
+        {
+            _sequence = sequence;
+            _fromIndex = fromIndex;
+            _toIndex = toIndex;
+        }
+
+        public void Execute()
+        {
+            var e = _sequence.Entries[_fromIndex];
+            _sequence.Entries.RemoveAt(_fromIndex);
+            _sequence.Entries.Insert(_toIndex, e);
+        }
+
+        public void Undo()
+        {
+            var e = _sequence.Entries[_toIndex];
+            _sequence.Entries.RemoveAt(_toIndex);
+            _sequence.Entries.Insert(_fromIndex, e);
         }
     }
 }
-

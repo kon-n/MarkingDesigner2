@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+    <PackageReference Include="ZXing.Net" Version="0.16.11" />
   </ItemGroup>
 
   <ItemGroup>
